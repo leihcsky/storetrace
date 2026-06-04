@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #4608ad;
+  --color-brand-hover: #38088a;
+  --color-brand-light: #f4effc;
+  --color-brand-muted: #d8c8f0;
+  --color-brand-subtle: #9b6fd4;
+  --color-brand-ring: #4608ad;
+}
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --font-logo: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --brand: #4608ad;
+  --brand-hover: #38088a;
+  --brand-light: #f4effc;
+  --brand-muted: #d8c8f0;
+  --brand-subtle: #9b6fd4;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+}

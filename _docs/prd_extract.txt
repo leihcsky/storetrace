@@ -1,0 +1,331 @@
+﻿StoreTrace - Shopify Store Intelligence 骞冲彴浜у搧闇€姹傛枃妗ｏ紙PRD V2.0锛?
+涓€銆侀」鐩杩?
+椤圭洰鍚嶇О
+StoreTrace
+鍩熷悕
+storetrace.org
+鍝佺墝瀹氫綅
+StoreTrace 鏄竴涓?Shopify 搴楅摵鍒嗘瀽骞冲彴銆?
+鐢ㄦ埛鍙互杈撳叆浠绘剰 Shopify 搴楅摵缃戝潃锛岃幏鍙栵細
+Theme锛堜富棰橈級淇℃伅
+App锛堝簲鐢級淇℃伅
+Store锛堝簵閾猴級鍩虹淇℃伅
+Shopify 鎶€鏈爤淇℃伅
+闀挎湡鐩爣锛?
+鎵撻€?Shopify 鐢熸€佺殑鏁版嵁鎯呮姤骞冲彴锛圫hopify Store Intelligence锛夈€?
+浜屻€佷骇鍝佺洰鏍?
+MVP鐩爣
+閫氳繃 Shopify Theme Detector 鑾峰彇绗竴鎵筍EO娴侀噺銆?
+楠岃瘉鍏抽敭璇嶏細
+shopify theme detector
+shopify theme checker
+what shopify theme is this
+鍚屾椂寮€濮嬬Н绱?Shopify 搴楅摵鏁版嵁搴撱€?
+涓夈€佷骇鍝佸彂灞曡矾绾?
+Phase 1锛圡VP锛?
+Theme Detector
+鐩爣锛?
+鑾峰彇 SEO 娴侀噺
+鏍稿績椤甸潰锛?
+/tools/theme-detector
+鍔熻兘锛?
+杈撳叆搴楅摵缃戝潃
+杈撳嚭锛?
+Theme Name
+Theme Vendor
+Theme Description
+Theme Store URL
+鍚屾椂淇濆瓨锛?
+Store 鏁版嵁
+Phase 2
+App Detector
+鏍稿績椤甸潰锛?
+/tools/app-detector
+鍔熻兘锛?
+璇嗗埆 Shopify 搴楅摵瀹夎鐨勫簲鐢?
+渚嬪锛?
+Judge.me
+Klaviyo
+Loox
+Omnisend
+Aftership
+杈撳嚭锛?
+App 鍒楄〃
+淇濆瓨 App 鏁版嵁
+Phase 3
+Store Analyzer
+鏍稿績椤甸潰锛?
+/tools/store-analyzer
+鑱氬悎灞曠ず锛?
+Theme
+Apps
+Store Metadata
+鐢熸垚瀹屾暣鍒嗘瀽椤?
+渚嬪锛?
+/stores/gymshark-com
+Phase 4
+Theme Database
+寤虹珛锛?
+/themes/[slug]
+渚嬪锛?
+/themes/prestige
+/themes/impulse
+/themes/dawn
+Phase 5
+App Database
+寤虹珛锛?
+/apps/[slug]
+渚嬪锛?
+/apps/klaviyo
+/apps/judge-me
+Phase 6
+Store Database
+寤虹珛锛?
+/stores/[domain]
+褰㈡垚 Shopify 搴楅摵鏁版嵁搴撱€?
+鍥涖€佹妧鏈灦鏋?
+鍓嶇
+Next.js 15
+瑕佹眰锛?
+App Router
+TypeScript
+SSR
+SEO鍙嬪ソ
+UI
+TailwindCSS
+瑕佹眰锛?
+Mobile First
+鍝嶅簲寮忓竷灞€
+鏋佺畝SaaS椋庢牸
+鏁版嵁搴?
+MySQL 8
+閮ㄧ讲浣嶇疆锛?
+鑷湁 VPS
+鎺ㄨ崘锛?
+Docker 閮ㄧ讲
+ORM
+Drizzle ORM
+鍘熷洜锛?
+绫诲瀷瀹夊叏
+杞婚噺
+涓?MySQL 閰嶅悎鑹ソ
+閮ㄧ讲鏋舵瀯
+鍓嶇锛?
+Vercel
+鏁版嵁搴擄細
+VPS MySQL
+闈欐€佽祫婧愶細
+Cloudflare R2
+DNS/CDN锛?
+Cloudflare
+鏁版嵁鍒嗘瀽
+Google Analytics 4
+Google Search Console
+Microsoft Clarity
+浜斻€佺綉绔欑粨鏋?
+棣栭〉
+/
+浣滅敤锛?
+鍝佺墝棣栭〉
+涓昏鍏ュ彛锛?
+Store Analysis 杈撳叆妗?
+宸ュ叿椤?
+/tools
+鍖呭惈锛?
+/tools/theme-detector
+/tools/app-detector
+/tools/store-analyzer
+Theme搴?
+/themes
+鍔ㄦ€佽矾鐢憋細
+/themes/[slug]
+App搴?
+/apps
+鍔ㄦ€佽矾鐢憋細
+/apps/[slug]
+Store搴?
+/stores
+鍔ㄦ€佽矾鐢憋細
+/stores/[domain]
+渚嬪锛?
+/stores/gymshark-com
+/stores/allbirds-com
+Blog
+/blog
+鐢ㄤ簬SEO鍐呭鎵╁睍銆?
+鍏€侀椤佃璁?
+Hero
+鏍囬锛?
+Discover Any Shopify Store鈥檚 Theme & Apps
+鍓爣棰橈細
+Analyze Shopify stores instantly.
+杈撳叆妗嗭細
+Store URL
+鎸夐挳锛?
+Analyze Store
+Popular Themes
+灞曠ず鐑棬涓婚銆?
+Recent Analyses
+灞曠ず鏈€杩戝垎鏋愯繃鐨勫簵閾恒€?
+FAQ
+SEO鍐呭妯″潡銆?
+涓冦€乀heme Detector
+椤甸潰
+/tools/theme-detector
+杈撳叆
+鐢ㄦ埛杈撳叆锛?
+https://store.com
+杈撳嚭
+Theme Name
+Theme Vendor
+Theme Description
+Theme Store URL
+Confidence Score
+娴佺▼
+杈撳叆URL
+鈫?
+鎶撳彇HTML
+鈫?
+妫€娴婼hopify
+鈫?
+璇嗗埆Theme
+鈫?
+淇濆瓨Store
+鈫?
+璺宠浆缁撴灉椤?
+缁撴灉椤?
+缁熶竴璺宠浆锛?
+/stores/[domain]
+渚嬪锛?
+/stores/gymshark-com
+鍏€丄pp Detector
+椤甸潰
+/tools/app-detector
+杈撳叆
+Store URL
+杈撳嚭
+妫€娴嬪埌鐨?Shopify Apps
+App鍚嶇О
+App鍒嗙被
+App绠€浠?
+鏁版嵁瀛樺偍
+鍚屾淇濆瓨鍒版暟鎹簱銆?
+涔濄€丼tore Analyzer
+椤甸潰
+/ stores/[domain]
+椤甸潰鍐呭
+Store Overview
+Theme Information
+Installed Apps
+Store Metadata
+Last Scan Time
+Related Themes
+Related Apps
+SEO
+姣忎釜鍒嗘瀽缁撴灉椤靛厑璁告敹褰曘€?
+鑷姩鐢熸垚锛?
+Title
+Description
+Structured Data
+鍗併€佹暟鎹簱璁捐
+themes
+id
+name
+slug
+vendor
+description
+theme_store_url
+created_at
+apps
+id
+name
+slug
+vendor
+category
+official_url
+created_at
+stores
+id
+domain
+store_name
+theme_id
+country
+currency
+shopify_detected
+created_at
+last_scanned_at
+store_apps
+id
+store_id
+app_id
+detected_at
+scans
+id
+store_id
+scan_result
+scan_time
+鍗佷竴銆丼EO鏋舵瀯
+鏍稿績鍏ュ彛锛?
+/tools/theme-detector
+鐩爣璇嶏細
+shopify theme detector
+绗簩鍏ュ彛锛?
+/tools/app-detector
+鐩爣璇嶏細
+shopify app detector
+闀挎湡鍏ュ彛锛?
+/themes/[slug]
+/apps/[slug]
+/stores/[domain]
+鍗氬涓婚锛?
+How To Find Shopify Theme
+Best Shopify Themes For Fashion
+Best Shopify Themes For Jewelry
+Best Shopify Apps For Dropshipping
+Shopify Theme Detector Guide
+鍗佷簩銆佹暟鎹闀跨瓥鐣?
+鐢ㄦ埛鎻愪氦
+姣忔妫€娴嬶細
+鑷姩鍒涘缓 Store 鏁版嵁銆?
+鑷姩鐖櫕
+鍚庣画寮€鍙戯細
+Shopify Store Discovery Engine
+鑷姩鍙戠幇锛?
+Shopify 搴楅摵
+鑷姩鏇存柊锛?
+Theme
+Apps
+Metadata
+鐩爣锛?
+绗?涓湀锛?
+1000 Stores
+绗?涓湀锛?
+10000 Stores
+绗?2涓湀锛?
+100000+ Stores
+鍗佷笁銆佸彉鐜拌鍒?
+Phase 1
+Google Adsense
+Phase 2
+Theme Affiliate
+Phase 3
+Shopify Affiliate
+Phase 4
+Shopify App Affiliate
+Phase 5
+Premium Intelligence Tools
+鍗佸洓銆佺涓€闃舵寮€鍙戜换鍔★紙P0锛?
+蹇呴』瀹屾垚锛?
+棣栭〉
+Theme Detector
+Theme璇嗗埆寮曟搸
+Store缁撴灉椤?
+MySQL鏁版嵁搴?
+Store鍏ュ簱
+SEO Meta
+Sitemap
+Robots
+Structured Data
+Cloudflare缂撳瓨
+涓婄嚎鐩爣锛?
+7~14澶╁唴鍙戝竷 MVP
