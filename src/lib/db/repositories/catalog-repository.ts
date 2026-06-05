@@ -148,7 +148,7 @@ export async function getCatalogAppBySlug(
 
   try {
     if (!(await isCatalogSchemaReady())) {
-      return appListingToFeaturedShape(fallback);
+      return fallback ? appListingToFeaturedShape(fallback) : null;
     }
 
     await ensureAppsCatalogSeeded();
@@ -158,11 +158,11 @@ export async function getCatalogAppBySlug(
     });
 
     if (!row || !row.isListed) {
-      return appListingToFeaturedShape(fallback);
+      return fallback ? appListingToFeaturedShape(fallback) : null;
     }
 
     return rowToFeaturedApp(row);
   } catch {
-    return appListingToFeaturedShape(fallback);
+    return fallback ? appListingToFeaturedShape(fallback) : null;
   }
 }
