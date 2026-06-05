@@ -6,7 +6,7 @@ interface AppSignature {
   name: string;
   category: string;
   vendor: string;
-  officialUrl: string;
+  officialUrl: string | null;
   patterns: RegExp[];
 }
 

@@ -14,7 +14,7 @@ export interface FeaturedApp {
   rating: number | null;
   reviewCount: number | null;
   rankingBadge: string | null;
-  iconUrl: string;
+  iconUrl: string | null;
   shopifyAppStoreUrl: string;
 }
 

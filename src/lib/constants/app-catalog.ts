@@ -15,7 +15,7 @@ export interface AppCatalogEntry {
   rating: number | null;
   reviewCount: number | null;
   rankingBadge: string | null;
-  iconUrl: string;
+  iconUrl: string | null;
 }
 
 export function getShopifyAppStoreUrl(appStoreSlug: string): string {
