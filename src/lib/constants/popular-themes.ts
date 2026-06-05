@@ -5,7 +5,7 @@ import {
   type ThemePriceType,
 } from "@/lib/constants/featured-themes";
 
-const img = (id: string, name: string) =>
+const img = (id: string) =>
   `https://cdn.shopify.com/theme-store/${id}.jpg?width=1200&quality=80`;
 
 interface PopularThemeEntry {
@@ -235,7 +235,7 @@ function entryToFeaturedTheme(entry: PopularThemeEntry): FeaturedTheme {
     overview: [entry.description],
     exampleStoresToScan: [],
     themeStoreUrl,
-    imageUrl: img(entry.imageId, entry.name),
+    imageUrl: img(entry.imageId),
     imageAlt: `${entry.name} Shopify theme preview`,
   };
 }

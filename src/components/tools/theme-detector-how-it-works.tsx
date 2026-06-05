@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const steps = [
   {
     step: "1",
@@ -35,12 +37,12 @@ export function ThemeDetectorHowItWorks() {
         <p className="mx-auto mt-3 max-w-2xl text-center text-slate-600">
           Detect Shopify theme in three steps with our free Shopify Theme
           Detector — no login required.{" "}
-          <a
+          <Link
             href="/blog/shopify-theme-detector-guide"
             className="font-medium text-brand hover:underline"
           >
             Read how detection works
-          </a>
+          </Link>
           .
         </p>
         <ol className="mt-12 grid gap-8 md:grid-cols-3">
