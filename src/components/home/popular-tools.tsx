@@ -16,7 +16,7 @@ const tools = [
       "Identify Shopify apps installed on any store — Klaviyo, Judge.me, Loox, and more.",
     icon: Puzzle,
   },
-];
+] as const;
 
 export function PopularTools() {
   return (
@@ -53,11 +53,6 @@ export function PopularTools() {
                       {tool.title}
                     </h3>
                   </div>
-                  {tool.comingSoon && (
-                    <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
-                      Soon
-                    </span>
-                  )}
                 </div>
                 <p className="mt-4 flex-1 text-sm text-slate-600">
                   {tool.description}
