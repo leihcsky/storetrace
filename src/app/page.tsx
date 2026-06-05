@@ -34,6 +34,9 @@ export default function HomePage() {
         aria-labelledby="hero-heading"
       >
         <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
+          <p className="sr-only">
+            Impact-Site-Verification: 1e5c8424-938b-4eb7-95e1-cb5b91681f9a
+          </p>
           <p className="text-sm font-semibold uppercase tracking-wide text-brand">
             {siteConfig.name} · Shopify Store Intelligence
           </p>
