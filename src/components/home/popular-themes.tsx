@@ -41,7 +41,7 @@ export function PopularThemes() {
             &quot;Get theme&quot; links go to the Shopify Theme Store.
             {process.env.NEXT_PUBLIC_SHOPIFY_THEME_AFFILIATE_REF
               ? " Some links are affiliate links — we may earn a commission at no extra cost to you."
-              : " Configure NEXT_PUBLIC_SHOPIFY_THEME_AFFILIATE_REF to enable partner affiliate tracking."}
+              : null}
           </p>
         </div>
       </div>

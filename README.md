@@ -2,7 +2,7 @@
 
 Shopify Store Intelligence Platform — detect themes, apps, and store metadata for any Shopify store.
 
-**Domain:** [storetrace.org](https://storetrace.org)
+**Domain:** [storetrace.link](https://storetrace.link)
 
 ## Tech Stack
 

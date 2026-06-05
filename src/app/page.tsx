@@ -35,7 +35,7 @@ export default function HomePage() {
       >
         <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
           <p className="text-sm font-semibold uppercase tracking-wide text-brand">
-            Free Shopify store analyzer · No login
+            {siteConfig.name} · Shopify Store Intelligence
           </p>
           <h1
             id="hero-heading"
