@@ -1,5 +1,10 @@
 import { extractDomain, normalizeStoreUrl } from "@/lib/utils/url";
-import { fetchStoreHtml, fetchStoreHtmlByPath, fetchTextUrl } from "./fetch-store";
+import {
+  fetchStoreHtml,
+  fetchStoreHtmlByPath,
+  fetchStoreJson,
+  fetchTextUrl,
+} from "./fetch-store";
 import {
   detectShopify,
   extractCountry,
@@ -26,20 +31,26 @@ export async function scanStore(inputUrl: string): Promise<StoreScanResult> {
   const htmlCorpus = [homepageHtml, collectionHtml ?? ""].join("\n");
   const corpus = `${htmlCorpus}\n${jsCorpus}`;
 
+  const shopMeta = await fetchStoreJson<{
+    currency?: string;
+    country?: string;
+    name?: string;
+  }>(storeUrl, "/meta.json");
+
   const shopifyDetected = detectShopify(htmlCorpus);
   const theme = detectTheme(corpus);
   const apps = detectApps(corpus);
-  const currency = extractCurrency(htmlCorpus);
+  const currency = extractCurrency(corpus) ?? shopMeta?.currency ?? null;
   const productStats = await fetchStoreProductStats(storeUrl, currency);
 
   return {
     domain,
     storeUrl,
-    storeName: extractStoreName(htmlCorpus),
+    storeName: extractStoreName(htmlCorpus) ?? shopMeta?.name ?? null,
     shopifyDetected,
     shopifyDomain: extractShopifyDomain(htmlCorpus),
     shopifyPlan: extractShopifyPlan(corpus),
-    country: extractCountry(htmlCorpus),
+    country: extractCountry(corpus) ?? shopMeta?.country ?? null,
     currency,
     createdAtOnShopify: extractStoreCreatedAt(htmlCorpus),
     theme: {
@@ -47,6 +58,7 @@ export async function scanStore(inputUrl: string): Promise<StoreScanResult> {
       themeVendor: theme.themeVendor,
       themeDescription: theme.themeDescription,
       themeStoreUrl: theme.themeStoreUrl,
+      themeVersion: theme.themeVersion,
       confidenceScore: theme.confidenceScore,
     },
     apps,

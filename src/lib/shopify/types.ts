@@ -3,6 +3,8 @@ export interface ThemeDetectionResult {
   themeVendor: string | null;
   themeDescription: string | null;
   themeStoreUrl: string | null;
+  /** schema_version from Shopify.theme or data-theme-version on storefront */
+  themeVersion: string | null;
   confidenceScore: number;
 }
 

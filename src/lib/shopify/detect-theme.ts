@@ -16,10 +16,35 @@ export function detectTheme(html: string): ThemeDetectionResult & {
 
   const themeObject = html.match(/Shopify\.theme\s*=\s*(\{[\s\S]*?\});/);
   if (themeObject?.[1]) {
-    const nameMatch = themeObject[1].match(
+    const themeJson = themeObject[1];
+    const nameMatch = themeJson.match(
       /["']name["']\s*:\s*["']([^"']+)["']/i
     );
-    const idMatch = themeObject[1].match(/["']id["']\s*:\s*([0-9]+)/i);
+    const schemaNameMatch = themeJson.match(
+      /["']schema_name["']\s*:\s*["']([^"']+)["']/i
+    );
+    const idMatch = themeJson.match(/["']id["']\s*:\s*([0-9]+)/i);
+    const themeStoreIdMatch = themeJson.match(
+      /["']theme_store_id["']\s*:\s*([0-9]+)/i
+    );
+
+    if (schemaNameMatch?.[1]) {
+      const schemaName = schemaNameMatch[1].trim();
+      const listedOnThemeStore = Boolean(themeStoreIdMatch?.[1]);
+      const slug = schemaName.toLowerCase();
+      candidates.push({
+        name: formatThemeName(schemaName),
+        vendor: listedOnThemeStore ? "Shopify" : null,
+        description: null,
+        themeStoreUrl: listedOnThemeStore
+          ? `https://themes.shopify.com/themes/${slug}`
+          : null,
+        themeId: idMatch?.[1] ?? null,
+        // schema_name is the stable theme handle on custom / enterprise themes.
+        weight: 96,
+      });
+    }
+
     if (nameMatch?.[1]) {
       const themeName = nameMatch[1].trim();
       const weakName = looksLikeVersionOrBackup(themeName);
@@ -29,11 +54,24 @@ export function detectTheme(html: string): ThemeDetectionResult & {
         description: null,
         themeStoreUrl: null,
         themeId: idMatch?.[1] ?? null,
-        // Some stores expose backup/internal names in Shopify.theme.name.
-        // Keep it as a fallback signal, but avoid overriding cleaner names.
+        // Some stores expose backup/internal deploy names in Shopify.theme.name.
         weight: weakName ? 35 : 92,
       });
     }
+  }
+
+  const dataThemeName = html.match(
+    /data-theme-name=["']([^"']+)["']/i
+  );
+  if (dataThemeName?.[1] && !looksLikeVersionOrBackup(dataThemeName[1])) {
+    candidates.push({
+      name: formatThemeName(dataThemeName[1].trim()),
+      vendor: null,
+      description: null,
+      themeStoreUrl: null,
+      themeId: null,
+      weight: 90,
+    });
   }
 
   const themeNameMeta = html.match(
@@ -110,12 +148,15 @@ export function detectTheme(html: string): ThemeDetectionResult & {
 
   const best = candidates.sort((a, b) => b.weight - a.weight)[0];
 
+  const themeVersion = extractThemeVersion(html);
+
   if (!best) {
     return {
       themeName: null,
       themeVendor: null,
       themeDescription: null,
       themeStoreUrl: null,
+      themeVersion,
       confidenceScore: 0,
       rawThemeId: null,
     };
@@ -128,9 +169,26 @@ export function detectTheme(html: string): ThemeDetectionResult & {
     themeVendor: best.vendor,
     themeDescription: best.description,
     themeStoreUrl: best.themeStoreUrl,
+    themeVersion,
     confidenceScore,
     rawThemeId: best.themeId,
   };
+}
+
+function extractThemeVersion(html: string): string | null {
+  const fromThemeObject = html.match(
+    /["']schema_version["']\s*:\s*["']([^"']+)["']/i
+  );
+  if (fromThemeObject?.[1]) {
+    return fromThemeObject[1].trim();
+  }
+
+  const fromDataAttr = html.match(/data-theme-version=["']([^"']+)["']/i);
+  if (fromDataAttr?.[1]) {
+    return fromDataAttr[1].trim();
+  }
+
+  return null;
 }
 
 function formatThemeName(slug: string): string {
@@ -141,5 +199,7 @@ function formatThemeName(slug: string): string {
 }
 
 function looksLikeVersionOrBackup(value: string): boolean {
-  return /(backup|bf[-_]?backup|store[-_]\d+|v?\d+\.\d+|hydra)/i.test(value);
+  return /(backup|bf[-_]?backup|store[-_]\d+|rc[-_]cm[-_]|update$|\d{4}-\d{2}-\d{2}[_-]\d{2}[-:]\d{2}|v?\d+\.\d+|hydra)/i.test(
+    value
+  );
 }

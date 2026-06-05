@@ -6,6 +6,7 @@ import { StoreAnalysisTabs } from "@/components/store-analyzer/store-analysis-ta
 import { StoreAnalysisJsonLd } from "@/components/seo/structured-data";
 import { getStoreByDomainSlug } from "@/lib/db/repositories/store-repository";
 import { enrichAppFromCatalog } from "@/lib/constants/app-catalog";
+import { getPopularThemeBySlug } from "@/lib/constants/popular-themes";
 import { createPageMetadata } from "@/lib/utils/metadata";
 import { parseStoreAnalysisTab } from "@/lib/constants/store-analysis-tab";
 import type { AppDetectionResult, ProductStatsSummary } from "@/lib/shopify/types";
@@ -119,6 +120,7 @@ export default async function StoreDetailPage({
       themeVendor?: string;
       themeDescription?: string;
       themeStoreUrl?: string;
+      themeVersion?: string;
       confidenceScore?: number;
     };
     apps?: AppDetectionResult[];
@@ -128,12 +130,19 @@ export default async function StoreDetailPage({
   const themeFromScan = scanResult?.theme;
   const themeStoreUrl =
     theme?.themeStoreUrl ?? themeFromScan?.themeStoreUrl ?? null;
+  const themeDisplayName = theme?.name ?? themeFromScan?.themeName ?? null;
+  const themeVersion = themeFromScan?.themeVersion ?? null;
+  const themeCatalogSlug = theme?.slug ?? null;
+  const themeCatalogEntry = themeCatalogSlug
+    ? getPopularThemeBySlug(themeCatalogSlug)
+    : null;
+  const shopifyPlanDisplay =
+    store.shopifyPlan ?? scanResult?.shopifyPlan ?? "Not publicly exposed";
   const themeVendorDisplay = (() => {
     const vendor = themeFromScan?.themeVendor ?? theme?.vendor ?? null;
     if (vendor) return vendor;
     if (themeStoreUrl) return "Shopify Theme Store";
-    const themeName = theme?.name ?? themeFromScan?.themeName;
-    if (themeName) return "Custom theme (not on Theme Store)";
+    if (themeDisplayName) return "Custom theme";
     return "—";
   })();
 
@@ -194,14 +203,17 @@ export default async function StoreDetailPage({
           { label: "Store Name", value: store.storeName ?? "—" },
           {
             label: "Shopify Plan",
-            value: store.shopifyPlan ?? scanResult?.shopifyPlan ?? "Unknown",
+            value: shopifyPlanDisplay,
+          },
+          {
+            label: "Currency",
+            value: store.currency ?? "—",
           },
           {
             label: "Shopify Detected",
             value: store.shopifyDetected ? "Yes" : "No",
           },
           { label: "Country", value: store.country ?? "—" },
-          { label: "Currency", value: store.currency ?? "—" },
           {
             label: "Last Scan",
             value: store.lastScannedAt
@@ -227,25 +239,44 @@ export default async function StoreDetailPage({
         <p className="mb-5 text-sm text-slate-500">
           Theme signals from HTML, scripts, and Shopify theme objects.
         </p>
+        <div className="mb-6 rounded-2xl border border-brand-muted bg-gradient-to-br from-brand-light/60 to-white px-6 py-8 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand">
+            Detected theme
+          </p>
+          <p className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            {themeDisplayName}
+          </p>
+          {themeCatalogEntry && themeCatalogSlug && (
+            <Link
+              href={`/themes/${themeCatalogSlug}`}
+              className="mt-4 inline-flex text-sm font-semibold text-brand hover:underline"
+            >
+              View theme details →
+            </Link>
+          )}
+          {!themeCatalogEntry && !themeStoreUrl && themeDisplayName && (
+            <p className="mt-4 text-sm text-slate-500">
+              Custom theme — not listed on the Shopify Theme Store, so there is
+              no theme detail page.
+            </p>
+          )}
+          {themeStoreUrl && !themeCatalogEntry && (
+            <a
+              href={themeStoreUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex text-sm font-semibold text-brand hover:underline"
+            >
+              View on Shopify Theme Store ↗
+            </a>
+          )}
+        </div>
         <StatGrid
           items={[
-            {
-              label: "Theme Name",
-              value: (
-                <>
-                  {theme?.name ?? themeFromScan?.themeName}
-                  {theme && (
-                    <Link
-                      href={`/themes/${theme.slug}`}
-                      className="ml-2 text-sm font-normal text-brand hover:underline"
-                    >
-                      View theme →
-                    </Link>
-                  )}
-                </>
-              ),
-            },
             { label: "Vendor", value: themeVendorDisplay },
+            ...(themeVersion
+              ? [{ label: "Version", value: themeVersion }]
+              : []),
             ...(themeStoreUrl
               ? [
                   {

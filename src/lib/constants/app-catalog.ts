@@ -22,7 +22,24 @@ export function getShopifyAppStoreUrl(appStoreSlug: string): string {
   return `https://apps.shopify.com/${appStoreSlug}`;
 }
 
+export function getShopifyAppStoreSearchUrl(query: string): string {
+  return `https://apps.shopify.com/search?q=${encodeURIComponent(query)}`;
+}
+
 export const APP_CATALOG: AppCatalogEntry[] = [
+  {
+    matchNames: ["elevar", "elevar-conversion-tracking"],
+    slug: "elevar",
+    appStoreSlug: "gtm-datalayer-by-elevar",
+    listTitle: "Elevar Conversion Tracking",
+    developerName: "Elevar",
+    category: "Analytics",
+    pricingLabel: "Free to install",
+    rating: 4.9,
+    reviewCount: 120,
+    rankingBadge: null,
+    iconUrl: null,
+  },
   {
     matchNames: ["attentive"],
     slug: "attentive",
@@ -92,6 +109,19 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     rankingBadge: "Top 50",
     iconUrl:
       "https://cdn.shopify.com/app-store/listing_images/659062da3dcade1068da9e28c3d120c5/icon/CIzTtYS0i4cDEAE=.png",
+  },
+  {
+    matchNames: ["loop returns", "loop returns & exchanges", "loop-returns"],
+    slug: "loop-returns",
+    appStoreSlug: "loop-returns",
+    listTitle: "Loop Returns & Exchanges",
+    developerName: "Loop",
+    category: "Returns",
+    pricingLabel: "Free plan available",
+    rating: 4.7,
+    reviewCount: 426,
+    rankingBadge: null,
+    iconUrl: null,
   },
   {
     matchNames: ["aftership"],
