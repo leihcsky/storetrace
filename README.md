@@ -54,6 +54,37 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Deploy (VPS + PM2)
+
+Production path: `/var/www/storetrace`, PM2 app name: `storetrace`, domain: [storetrace.link](https://storetrace.link).
+
+### First-time server setup
+
+```bash
+sudo mkdir -p /var/www/storetrace
+sudo chown $USER:$USER /var/www/storetrace
+git clone <your-repo-url> /var/www/storetrace
+cd /var/www/storetrace
+cp .env.example .env.local
+# Edit .env.local: DATABASE_URL, NEXT_PUBLIC_SITE_URL=https://storetrace.link, …
+chmod +x scripts/deploy.sh
+bash scripts/deploy.sh
+pm2 startup   # follow printed instructions, then pm2 save
+```
+
+### Manual deploy
+
+```bash
+ssh -p 2201 user@your-vps
+bash /var/www/storetrace/scripts/deploy.sh
+```
+
+### GitHub Actions (auto deploy on push to `master`)
+
+Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) (参考示例：[`_docs/deploy.yml`](_docs/deploy.yml))
+
+Add repository secrets: `VPS_HOST`, `VPS_USERNAME`, `VPS_SSH_KEY`. Pushing to `master` SSH 到 VPS 执行 pull → build → `pm2 reload storetrace`（端口 `2201`）。
+
 ## Project Structure
 
 ```
