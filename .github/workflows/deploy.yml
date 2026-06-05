@@ -32,7 +32,11 @@ jobs:
             npm install
             npm run build
 
-            pm2 reload storetrace || pm2 start npm --name "storetrace" -- start
+            if pm2 describe storetrace >/dev/null 2>&1; then
+              pm2 reload ecosystem.config.cjs --update-env
+            else
+              pm2 start ecosystem.config.cjs
+            fi
 
             pm2 save
 

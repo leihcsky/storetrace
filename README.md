@@ -56,7 +56,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Deploy (VPS + PM2)
 
-Production path: `/var/www/storetrace`, PM2 app name: `storetrace`, domain: [storetrace.link](https://storetrace.link).
+Production path: `/var/www/storetrace`, PM2 app name: `storetrace`, listen port: **3001** (see `ecosystem.config.cjs`), domain: [storetrace.link](https://storetrace.link).
 
 ### First-time server setup
 
@@ -83,7 +83,7 @@ bash /var/www/storetrace/scripts/deploy.sh
 
 Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) (参考示例：[`_docs/deploy.yml`](_docs/deploy.yml))
 
-Add repository secrets: `VPS_HOST`, `VPS_USERNAME`, `VPS_SSH_KEY`. Pushing to `master` SSH 到 VPS 执行 pull → build → `pm2 reload storetrace`（端口 `2201`）。
+Add repository secrets: `VPS_HOST`, `VPS_USERNAME`, `VPS_SSH_KEY`. Pushing to `master` SSH 到 VPS 执行 pull → build → `pm2 reload ecosystem.config.cjs`（SSH 端口 `2201`）。Nginx 需将 `storetrace.link` 反代到 `http://127.0.0.1:3001`。
 
 ## Project Structure
 
