@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { WebsiteJsonLd } from "@/components/seo/structured-data";
@@ -35,6 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen antialiased">
+        <GoogleAnalytics />
         <WebsiteJsonLd />
         <Header />
         <main>{children}</main>
