@@ -9,6 +9,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3001,
+        NEXT_PUBLIC_GA_ID: "G-8GPRHS183R",
       },
     },
   ],

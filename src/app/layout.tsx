@@ -35,8 +35,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen antialiased">
+      <head>
         <GoogleAnalytics />
+      </head>
+      <body className="min-h-screen antialiased">
         <WebsiteJsonLd />
         <Header />
         <main>{children}</main>

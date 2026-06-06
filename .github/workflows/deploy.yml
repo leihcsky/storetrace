@@ -27,6 +27,8 @@ jobs:
             git fetch origin
             git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)
 
+            export NEXT_PUBLIC_GA_ID=G-8GPRHS183R
+
             # Full install (not --production): next build needs devDependencies
             # (typescript, tailwindcss, postcss, autoprefixer, eslint-config-next, …).
             npm install
