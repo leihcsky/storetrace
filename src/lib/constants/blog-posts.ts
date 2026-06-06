@@ -1133,7 +1133,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "shopify-theme-detector-guide",
-    title: "Shopify Theme Detector Guide (2026)",
+    title: "Shopify Theme Detector Guide",
     description:
       "How Shopify theme detectors work: detection signals, confidence scores, reading results, competitor research — not a repeat of our tool page UI walkthrough.",
     publishedAt: "2026-06-06",
@@ -1142,7 +1142,7 @@ export const blogPosts: BlogPost[] = [
     blocks: [
       {
         type: "paragraph",
-        text: "StoreTrace’s Shopify Theme Detector tool page is built for action: paste a URL, see theme name, vendor, Theme Store link, and FAQs. This guide goes one level deeper — how automated detection works in 2026, how to interpret confidence and custom themes, and how to run competitor audits without re-reading the same three-step UI copy.",
+        text: "StoreTrace’s Shopify Theme Detector tool page is built for action: paste a URL, see theme name, vendor, Theme Store link, and FAQs. This guide goes one level deeper — how automated detection works, how to interpret confidence and custom themes, and how to run competitor audits without re-reading the same three-step UI copy.",
       },
       {
         type: "paragraph",
