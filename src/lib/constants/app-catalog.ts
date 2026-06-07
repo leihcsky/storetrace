@@ -163,6 +163,128 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     iconUrl: null,
   },
   {
+    matchNames: ["govx", "govx id", "govx id exclusive discounts"],
+    slug: "govx-id",
+    appStoreSlug: "govx-id",
+    listTitle: "GOVX ID Exclusive Discounts",
+    developerName: "GovX",
+    category: "Discounts",
+    pricingLabel: "Free to install",
+    rating: 4.8,
+    reviewCount: 50,
+    rankingBadge: null,
+    iconUrl: null,
+  },
+  {
+    matchNames: ["beacon", "beacon fraud prevention", "beacon fraud"],
+    slug: "beacon",
+    appStoreSlug: "beacon",
+    listTitle: "Beacon Fraud Prevention",
+    developerName: "Lizuna KK",
+    category: "Fraud Prevention",
+    pricingLabel: "Free trial available",
+    rating: 4.9,
+    reviewCount: 14,
+    rankingBadge: null,
+    iconUrl: null,
+  },
+  {
+    matchNames: ["weglot", "traduisez votre store - weglot"],
+    slug: "weglot",
+    appStoreSlug: "weglot",
+    listTitle: "Weglot Translate Your Store",
+    developerName: "Weglot",
+    category: "Translation",
+    pricingLabel: "Free plan available",
+    rating: 4.6,
+    reviewCount: 1200,
+    rankingBadge: "Top 100",
+    iconUrl: null,
+  },
+  {
+    matchNames: ["quizify", "quizify - product quiz builder"],
+    slug: "quizify",
+    appStoreSlug: "product-recommendation-quiz",
+    listTitle: "Quizify: Product Quiz Builder",
+    developerName: "Quizify",
+    category: "Quizzes",
+    pricingLabel: "Free plan available",
+    rating: 4.8,
+    reviewCount: 300,
+    rankingBadge: null,
+    iconUrl: null,
+  },
+  {
+    matchNames: ["retention.com", "retention x", "retentionx"],
+    slug: "retention-com",
+    appStoreSlug: "retention",
+    listTitle: "Retention.com",
+    developerName: "Retention.com",
+    category: "Marketing",
+    pricingLabel: "Free trial available",
+    rating: 4.5,
+    reviewCount: 50,
+    rankingBadge: null,
+    iconUrl: null,
+  },
+  {
+    matchNames: [
+      "g:spin wheel+gamification+game",
+      "spin wheel",
+      "ga-spin",
+      "goodapps",
+    ],
+    slug: "ga-spin",
+    appStoreSlug: "ga-spin",
+    listTitle: "Spin Wheel+Gamification+Games",
+    developerName: "GoodApps",
+    category: "Pop-ups",
+    pricingLabel: "Free plan available",
+    rating: 4.8,
+    reviewCount: 600,
+    rankingBadge: null,
+    iconUrl: null,
+  },
+  {
+    matchNames: ["css a/b testing", "css ab testing"],
+    slug: "css-ab-testing",
+    appStoreSlug: "css-ab-testing",
+    listTitle: "CSS A/B Testing",
+    developerName: "Chief Software Solutions",
+    category: "A/B Testing",
+    pricingLabel: "Free plan available",
+    rating: null,
+    reviewCount: null,
+    rankingBadge: null,
+    iconUrl: null,
+  },
+  {
+    matchNames: ["discountly", "discountly pos & tier discount"],
+    slug: "discountly-pos-tier-discount",
+    appStoreSlug: "discountly-pos-tier-discount",
+    listTitle: "Discountly POS & Tier Discount",
+    developerName: "Discountly",
+    category: "Discounts",
+    pricingLabel: "Free plan available",
+    rating: 4.8,
+    reviewCount: 20,
+    rankingBadge: null,
+    iconUrl: null,
+  },
+  {
+    matchNames: ["yotpo subscriptions"],
+    slug: "yotpo-subscriptions",
+    appStoreSlug: "yotpo-social-reviews",
+    listTitle: "Yotpo Subscriptions",
+    developerName: "Yotpo",
+    category: "Subscriptions",
+    pricingLabel: "Free plan available",
+    rating: 4.8,
+    reviewCount: 4000,
+    rankingBadge: null,
+    iconUrl: null,
+  },
+  {
     matchNames: ["aftership"],
     slug: "aftership",
     appStoreSlug: "aftership",
@@ -476,14 +598,30 @@ export function findAppCatalogEntry(
   appName: string
 ): AppCatalogEntry | undefined {
   const normalized = appName.toLowerCase().trim();
-  return APP_CATALOG.find((entry) =>
-    entry.matchNames.some(
-      (name) =>
-        normalized === name ||
-        normalized.includes(name) ||
-        name.includes(normalized)
-    )
-  );
+  let best: AppCatalogEntry | undefined;
+  let bestScore = 0;
+
+  for (const entry of APP_CATALOG) {
+    for (const name of entry.matchNames) {
+      const matchName = name.toLowerCase();
+      let score = 0;
+
+      if (normalized === matchName) {
+        score = 1000 + matchName.length;
+      } else if (normalized.includes(matchName)) {
+        score = matchName.length;
+      } else if (matchName.includes(normalized)) {
+        score = normalized.length;
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        best = entry;
+      }
+    }
+  }
+
+  return best;
 }
 
 export function enrichAppFromCatalog(detected: {

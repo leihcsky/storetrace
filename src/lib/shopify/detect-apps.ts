@@ -39,6 +39,20 @@ const APP_SIGNATURES: AppSignature[] = [
     patterns: [/loox\.io/i, /loox\.app/i, /loox-reviews/i],
   },
   {
+    name: "Gorgias",
+    category: "Support",
+    vendor: "Gorgias",
+    officialUrl: "https://www.gorgias.com/",
+    patterns: [/gorgias/i, /config\.gorgias\.io/i],
+  },
+  {
+    name: "Searchspring",
+    category: "Search",
+    vendor: "Searchspring",
+    officialUrl: "https://searchspring.com/",
+    patterns: [/searchspring/i, /searchspring\.net/i],
+  },
+  {
     name: "AfterShip",
     category: "Tracking",
     vendor: "AfterShip",
@@ -151,6 +165,81 @@ const APP_SIGNATURES: AppSignature[] = [
       /integrations\/shopify\.js/i,
     ],
   },
+  {
+    name: "GOVX ID Exclusive Discounts",
+    category: "Discounts",
+    vendor: "GovX",
+    officialUrl: "https://www.govx.com/",
+    patterns: [
+      /id-shop\.govx\.com/i,
+      /govx\.js/i,
+      /auth\.govx\.com/i,
+      /GovXIdApi/i,
+    ],
+  },
+  {
+    name: "Beacon Fraud Prevention",
+    category: "Fraud Prevention",
+    vendor: "Beacon",
+    officialUrl: "https://apps.shopify.com/beacon",
+    patterns: [/beacon\.riskified\.com/i],
+  },
+  {
+    name: "Weglot",
+    category: "Translation",
+    vendor: "Weglot",
+    officialUrl: "https://www.weglot.com/",
+    patterns: [/cdn\.weglot\.com/i, /weglot_script_tag/i],
+  },
+  {
+    name: "Quizify",
+    category: "Quizzes",
+    vendor: "Quizify",
+    officialUrl: "https://quizify.io/",
+    patterns: [/pc-quiz\.s3/i, /quiz-loader\.min\.js/i, /quizify/i],
+  },
+  {
+    name: "Retention.com",
+    category: "Marketing",
+    vendor: "Retention.com",
+    officialUrl: "https://retention.com/",
+    patterns: [/app\.retention\.com/i],
+  },
+  {
+    name: "G:Spin Wheel+Gamification+Game",
+    category: "Pop-ups",
+    vendor: "GoodApps",
+    officialUrl: "https://apps.shopify.com/ga-spin",
+    patterns: [
+      /jsstore\/a\/[^/]+\/ge\.js/i,
+      /good-apps\.co/i,
+      /ga-spin/i,
+    ],
+  },
+  {
+    name: "CSS A/B Testing",
+    category: "A/B Testing",
+    vendor: "Chief Software Solutions",
+    officialUrl: "https://apps.shopify.com/css-ab-testing",
+    patterns: [/media\.9gtb\.com/i, /chiefss\.com/i],
+  },
+  {
+    name: "Discountly POS & Tier Discount",
+    category: "Discounts",
+    vendor: "Discountly",
+    officialUrl: "https://apps.shopify.com/discountly-pos-tier-discount",
+    patterns: [/discountly-pos-tier-discount/i, /ac-tiered-style/i],
+  },
+  {
+    name: "Yotpo Subscriptions",
+    category: "Subscriptions",
+    vendor: "Yotpo",
+    officialUrl: "https://www.yotpo.com/",
+    patterns: [
+      /yotpo-subscriptions/i,
+      /d18eg7dreypte5\.cloudfront\.net\/scripts\/integrations\/subscription/i,
+    ],
+  },
 ];
 
 /**
@@ -185,6 +274,12 @@ const SHOPIFY_APP_CLIENT_IDS: Record<
     category: "Fraud Prevention",
     vendor: "Chargeflow",
     officialUrl: "https://www.chargeflow.io/",
+  },
+  "294517": {
+    name: "Retention.com",
+    category: "Marketing",
+    vendor: "Retention.com",
+    officialUrl: "https://retention.com/",
   },
 };
 
@@ -258,6 +353,18 @@ const SHOPIFY_APP_HANDLES: Record<
     category: "Video Commerce",
     vendor: "Firework",
     officialUrl: "https://firework.com/",
+  },
+  "yotpo-subscriptions": {
+    name: "Yotpo Subscriptions",
+    category: "Subscriptions",
+    vendor: "Yotpo",
+    officialUrl: "https://www.yotpo.com/",
+  },
+  "discountly-pos-tier-discount": {
+    name: "Discountly POS & Tier Discount",
+    category: "Discounts",
+    vendor: "Discountly",
+    officialUrl: "https://apps.shopify.com/discountly-pos-tier-discount",
   },
 };
 
@@ -333,19 +440,19 @@ const HANDLE_PREFIXES: Array<{
 
 export function detectApps(html: string): AppDetectionResult[] {
   const headless = isHydrogenStorefront(html);
-  const signatureCorpus = headless ? extractExternalScriptCorpus(html) : html;
+  const corpus = buildAppDetectionCorpus(html, headless);
 
   const detectedBySignature = APP_SIGNATURES.filter((app) =>
-    app.patterns.some((pattern) => pattern.test(signatureCorpus))
+    app.patterns.some((pattern) => pattern.test(corpus))
   );
 
   const all = [...detectedBySignature];
 
-  for (const app of detectAppLikeVendors(html, headless)) {
+  for (const app of detectShopifyAppHandles(html)) {
     pushUniqueApp(all, app);
   }
 
-  for (const app of detectShopifyAppHandles(html)) {
+  for (const app of detectThemeAppExtensions(html)) {
     pushUniqueApp(all, app);
   }
 
@@ -403,6 +510,84 @@ function pushUniqueApp(target: AppSignature[], app: AppSignature) {
   }
 }
 
+/** Unescape JSON-escaped slashes (`https:\/\/…`) from Shopify inline script tags. */
+function normalizeEscapedUrls(text: string): string {
+  return text.replace(/\\+\//g, "/");
+}
+
+/**
+ * Build a single corpus for signature matching.
+ * Liquid stores: full normalized HTML + every extractable URL.
+ * Headless stores: external script URLs only (avoids RSC env false positives).
+ */
+function buildAppDetectionCorpus(html: string, headless: boolean): string {
+  const normalized = normalizeEscapedUrls(html);
+  const parts: string[] = [];
+
+  if (headless) {
+    parts.push(extractExternalScriptCorpus(html));
+    parts.push(extractExternalScriptCorpus(normalized));
+  } else {
+    parts.push(normalized);
+  }
+
+  parts.push(extractPageUrls(headless ? parts.join("\n") : normalized));
+  return parts.join("\n");
+}
+
+/** Collect script src, inline URLs, and Shopify script-tag loader injections. */
+function extractPageUrls(html: string): string {
+  const urls: string[] = [];
+
+  for (const match of html.matchAll(/(?:https?:)?\/\/[^"'\s<>]+/gi)) {
+    urls.push(match[0].startsWith("//") ? `https:${match[0]}` : match[0]);
+  }
+
+  // Shopify Online Store script tags (asyncLoad var urls = [...])
+  for (const block of html.matchAll(/var\s+urls\s*=\s*\[([\s\S]*?)\]/gi)) {
+    for (const match of block[1].matchAll(/["']((?:https?:)?\/\/[^"']+)["']/gi)) {
+      const raw = match[1];
+      urls.push(raw.startsWith("//") ? `https:${raw}` : raw);
+    }
+  }
+
+  return urls.join("\n");
+}
+
+/** Theme app extensions hosted on cdn.shopify.com/extensions/{uuid}/{handle}-{version}/ */
+function detectThemeAppExtensions(html: string): AppSignature[] {
+  const results: AppSignature[] = [];
+  const handles = [
+    ...html.matchAll(
+      /cdn\.shopify\.com\/extensions\/[a-f0-9-]+\/([a-z0-9-]+)-\d+\//gi
+    ),
+  ]
+    .map((match) => match[1]?.toLowerCase())
+    .filter(Boolean);
+
+  for (const handle of new Set(handles)) {
+    const mapped = resolveAppFromHandle(handle);
+    if (mapped) {
+      results.push(mapped);
+      continue;
+    }
+
+    const readable = handle
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+    results.push({
+      name: readable,
+      category: "Shopify App",
+      vendor: readable,
+      officialUrl: null,
+      patterns: [],
+    });
+  }
+
+  return results;
+}
+
 function extractExternalScriptCorpus(html: string): string {
   const chunks: string[] = [];
 
@@ -418,120 +603,11 @@ function extractExternalScriptCorpus(html: string): string {
     chunks.push(match[0]);
   }
 
-  return chunks.join("\n");
-}
-
-function detectAppLikeVendors(html: string, headless = false): AppSignature[] {
-  const results: AppSignature[] = [];
-  const scriptUrls = html.match(/https?:\/\/[^"'\s>]+/gi) ?? [];
-
-  const keywordMap: Array<{
-    keyword: RegExp;
-    name: string;
-    category: string;
-    url: string;
-    /** Match escaped URLs / config outside script src (liquid stores only). */
-    scanHtml?: boolean;
-  }> = [
-    {
-      keyword: /searchspring/i,
-      name: "Searchspring",
-      category: "Search",
-      url: "https://searchspring.com/",
-    },
-    {
-      keyword: /gorgias/i,
-      name: "Gorgias",
-      category: "Support",
-      url: "https://www.gorgias.com/",
-    },
-    {
-      keyword: /static\.klaviyo\.com|klaviyo\.js/i,
-      name: "Klaviyo",
-      category: "Email Marketing",
-      url: "https://www.klaviyo.com/",
-    },
-    {
-      keyword: /judge\.me|jdgm/i,
-      name: "Judge.me",
-      category: "Reviews",
-      url: "https://judge.me/",
-    },
-    {
-      keyword: /cdn-widgetsrepository\.yotpo|cdn-loyalty\.yotpo|yotpo\.com/i,
-      name: "Yotpo",
-      category: "Reviews",
-      url: "https://www.yotpo.com/",
-    },
-    {
-      keyword: /connect\.nosto\.com|nosto\.com\/script/i,
-      name: "Nosto",
-      category: "Personalization",
-      url: "https://www.nosto.com/",
-    },
-    {
-      keyword: /aftership|automizely/i,
-      name: "AfterShip",
-      category: "Tracking",
-      url: "https://www.aftership.com/",
-    },
-    {
-      keyword: /elevar/i,
-      name: "Elevar",
-      category: "Analytics",
-      url: "https://getelevar.com/",
-    },
-    {
-      keyword: /attentive-dtag|attn\.tv|attentivemobile\.com/i,
-      name: "Attentive",
-      category: "SMS Marketing",
-      url: "https://www.attentive.com/",
-      scanHtml: true,
-    },
-    {
-      keyword: /@loophq\/onstore-sdk|loop-onstore-sdk|loopreturns\.com/i,
-      name: "Loop Returns",
-      category: "Returns",
-      url: "https://www.loopreturns.com/",
-    },
-    {
-      keyword: /rechargecdn\.com|rechargepayments\.com/i,
-      name: "Recharge",
-      category: "Subscriptions",
-      url: "https://getrecharge.com/",
-      scanHtml: true,
-    },
-    {
-      keyword: /useamp\.com|shopsheriff\.com/i,
-      name: "Shop Sheriff",
-      category: "Store Design",
-      url: "https://shopsheriff.com/",
-      scanHtml: true,
-    },
-    {
-      keyword: /fwcdn|fwn\.js|firework-shoppable/i,
-      name: "Firework",
-      category: "Video Commerce",
-      url: "https://firework.com/",
-    },
-  ];
-
-  for (const entry of keywordMap) {
-    if (
-      scriptUrls.some((url) => entry.keyword.test(url)) ||
-      (!headless && entry.scanHtml && entry.keyword.test(html))
-    ) {
-      results.push({
-        name: entry.name,
-        category: entry.category,
-        vendor: entry.name,
-        officialUrl: entry.url,
-        patterns: [],
-      });
-    }
+  for (const match of html.matchAll(/\/a\/[a-z0-9-]+\//gi)) {
+    chunks.push(match[0]);
   }
 
-  return results;
+  return chunks.join("\n");
 }
 
 function detectShopifyAppHandles(html: string): AppSignature[] {

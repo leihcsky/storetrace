@@ -23,13 +23,19 @@ import type { StoreScanResult } from "./types";
 export async function scanStore(inputUrl: string): Promise<StoreScanResult> {
   const storeUrl = normalizeStoreUrl(inputUrl);
   const domain = extractDomain(storeUrl);
-  const homepageHtml = await fetchStoreHtml(storeUrl);
-  const collectionHtml = await fetchStoreHtmlByPath(storeUrl, "/collections/all");
+  const [homepageHtml, collectionHtml, cartHtml] = await Promise.all([
+    fetchStoreHtml(storeUrl),
+    fetchStoreHtmlByPath(storeUrl, "/collections/all"),
+    // Many apps (discounts, returns, upsell) inject only on cart / drawer pages.
+    fetchStoreHtmlByPath(storeUrl, "/cart"),
+  ]);
 
   const scriptUrls = extractSameOriginScriptUrls(storeUrl, homepageHtml).slice(0, 10);
   const scriptTexts = await Promise.all(scriptUrls.map((url) => fetchTextUrl(url)));
   const jsCorpus = scriptTexts.filter(Boolean).join("\n");
-  const htmlCorpus = [homepageHtml, collectionHtml ?? ""].join("\n");
+  const htmlCorpus = [homepageHtml, collectionHtml ?? "", cartHtml ?? ""].join(
+    "\n"
+  );
   const corpus = `${htmlCorpus}\n${jsCorpus}`;
 
   const shopMeta = await fetchStoreJson<{
