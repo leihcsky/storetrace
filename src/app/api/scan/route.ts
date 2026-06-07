@@ -35,12 +35,27 @@ export async function POST(request: Request) {
 
     let domainSlug = domainToSlug(result.domain);
 
-    if (parsed.data.save && process.env.DATABASE_URL) {
+    const dbConfigured = Boolean(
+      process.env.DATABASE_URL?.trim() || process.env.MYSQL_HOST?.trim()
+    );
+
+    if (parsed.data.save && dbConfigured) {
       try {
         const saved = await saveScanResult(result);
         domainSlug = saved.domainSlug;
       } catch (dbError) {
         console.error("Failed to save scan result:", dbError);
+        const message =
+          dbError instanceof Error ? dbError.message : "Database error";
+        return NextResponse.json(
+          {
+            error:
+              message.includes("DATABASE_URL") || message.includes("URI")
+                ? "Database connection failed. Check DATABASE_URL on the server (URL-encode special characters in the password)."
+                : `Could not save scan results: ${message}`,
+          },
+          { status: 503 }
+        );
       }
     }
 

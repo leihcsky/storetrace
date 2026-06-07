@@ -1,7 +1,7 @@
 import Image from "next/image";
 import {
-  ChevronRight,
   Code2,
+  ExternalLink,
   Info,
   Puzzle,
   Star,
@@ -111,17 +111,10 @@ export function DetectedAppsList({ apps, embedded = false }: DetectedAppsListPro
 
           return (
             <li key={app.slug}>
-              <a
-                href={storeUrl ?? "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-3 transition hover:border-emerald-200 hover:bg-white hover:shadow-sm ${
-                  !storeUrl ? "pointer-events-none opacity-60" : ""
-                }`}
-              >
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-3">
                 <AppIcon name={app.name} iconUrl={app.iconUrl} />
 
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 select-text">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="truncate font-semibold text-slate-900">
                       {app.listTitle}
@@ -163,10 +156,27 @@ export function DetectedAppsList({ apps, embedded = false }: DetectedAppsListPro
                   </p>
                 </div>
 
-                {storeUrl && (
-                  <ChevronRight className="h-5 w-5 shrink-0 text-emerald-600 transition group-hover:translate-x-0.5" />
+                {storeUrl ? (
+                  <a
+                    href={storeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 sm:px-3.5 sm:text-sm"
+                    aria-label={`View ${app.listTitle} on Shopify App Store`}
+                  >
+                    <span className="hidden sm:inline">App Store</span>
+                    <span className="sm:hidden">Store</span>
+                    <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                  </a>
+                ) : (
+                  <span
+                    className="shrink-0 rounded-lg border border-dashed border-slate-200 px-3 py-2 text-xs text-slate-400"
+                    title="No App Store listing available"
+                  >
+                    N/A
+                  </span>
                 )}
-              </a>
+              </div>
             </li>
           );
         })}
@@ -177,7 +187,7 @@ export function DetectedAppsList({ apps, embedded = false }: DetectedAppsListPro
       >
         <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         Detection based on publicly visible code. Some apps may not be detected.
-        Links open the app&apos;s listing on the Shopify App Store when available.
+        Use the App Store button to open a listing when available.
       </p>
     </div>
   );

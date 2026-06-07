@@ -16,6 +16,7 @@ import {
 } from "./detect-shopify";
 import { detectTheme } from "./detect-theme";
 import { detectApps } from "./detect-apps";
+import { detectStorefrontType } from "./detect-storefront";
 import { fetchStoreProductStats } from "./fetch-products";
 import type { StoreScanResult } from "./types";
 
@@ -38,6 +39,7 @@ export async function scanStore(inputUrl: string): Promise<StoreScanResult> {
   }>(storeUrl, "/meta.json");
 
   const shopifyDetected = detectShopify(htmlCorpus);
+  const storefrontType = detectStorefrontType(corpus);
   const theme = detectTheme(corpus);
   const apps = detectApps(corpus);
   const currency = extractCurrency(corpus) ?? shopMeta?.currency ?? null;
@@ -48,6 +50,7 @@ export async function scanStore(inputUrl: string): Promise<StoreScanResult> {
     storeUrl,
     storeName: extractStoreName(htmlCorpus) ?? shopMeta?.name ?? null,
     shopifyDetected,
+    storefrontType,
     shopifyDomain: extractShopifyDomain(htmlCorpus),
     shopifyPlan: extractShopifyPlan(corpus),
     country: extractCountry(corpus) ?? shopMeta?.country ?? null,

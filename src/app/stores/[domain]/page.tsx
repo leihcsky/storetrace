@@ -24,7 +24,7 @@ export async function generateMetadata({
 }: StorePageProps): Promise<Metadata> {
   const { domain: domainSlug } = await params;
 
-  if (!process.env.DATABASE_URL) {
+  if (!process.env.DATABASE_URL?.trim() && !process.env.MYSQL_HOST?.trim()) {
     return createPageMetadata({
       title: `Shopify Store Analysis — ${domainSlug}`,
       description: `Shopify store analysis for ${domainSlug}`,
@@ -86,11 +86,11 @@ export default async function StoreDetailPage({
   const { tab: tabParam } = await searchParams;
   const initialTab = parseStoreAnalysisTab(tabParam);
 
-  if (!process.env.DATABASE_URL) {
+  if (!process.env.DATABASE_URL?.trim() && !process.env.MYSQL_HOST?.trim()) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
         <p className="text-slate-600">
-          Database not configured. Set DATABASE_URL to view store analysis results.
+          Database not configured. Set DATABASE_URL (or MYSQL_* variables) to view store analysis results.
         </p>
         <Link
           href="/tools/theme-detector"
@@ -102,7 +102,33 @@ export default async function StoreDetailPage({
     );
   }
 
-  const store = await getStoreByDomainSlug(domainSlug);
+  let store;
+  try {
+    store = await getStoreByDomainSlug(domainSlug);
+  } catch (error) {
+    console.error("Store page database error:", error);
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
+        <h1 className="text-xl font-semibold text-slate-900">
+          Could not load store analysis
+        </h1>
+        <p className="mt-3 text-slate-600">
+          The database connection failed on the server. Check{" "}
+          <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">
+            DATABASE_URL
+          </code>{" "}
+          in production (password special characters must be URL-encoded, or
+          use MYSQL_HOST / MYSQL_USER / MYSQL_PASSWORD / MYSQL_DATABASE).
+        </p>
+        <Link
+          href="/"
+          className="mt-6 inline-block text-brand hover:underline"
+        >
+          ← Back to analyzer
+        </Link>
+      </div>
+    );
+  }
 
   if (!store) {
     notFound();
@@ -110,6 +136,7 @@ export default async function StoreDetailPage({
 
   const lastScan = store.scans[0];
   const scanResult = lastScan?.scanResult as {
+    storefrontType?: "liquid" | "hydrogen" | "unknown";
     shopifyPlan?: string | null;
     createdAtOnShopify?: string | null;
     productStats?: ProductStatsSummary;
@@ -304,6 +331,15 @@ export default async function StoreDetailPage({
               : []),
           ]}
         />
+      </div>
+    ) : scanResult?.storefrontType === "hydrogen" ? (
+      <div className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-4 text-sm text-slate-600">
+        <p className="font-medium text-slate-900">Headless Shopify storefront</p>
+        <p className="mt-2">
+          This store runs on Shopify Hydrogen / Oxygen (custom React storefront), not
+          a Liquid theme from the Theme Store. Theme detection does not apply — the
+          same reason competitors typically show no theme here.
+        </p>
       </div>
     ) : (
       <p className="text-slate-500">No theme detected from public storefront code.</p>

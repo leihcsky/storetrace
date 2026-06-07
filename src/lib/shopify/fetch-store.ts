@@ -93,7 +93,7 @@ export async function fetchStoreJson<T>(
         "User-Agent": USER_AGENT,
         Accept: "application/json,text/plain,*/*",
       },
-      next: { revalidate: 300 },
+      cache: "no-store",
     });
 
     if (!response.ok) return null;

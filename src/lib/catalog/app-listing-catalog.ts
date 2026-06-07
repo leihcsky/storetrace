@@ -169,7 +169,7 @@ const listingOnlyApps: AppListingSeed[] = [
     reviewCount: 200,
     rankingBadge: "Top 100",
     iconUrl: null,
-    appStoreSlug: "recharge",
+    appStoreSlug: "subscription-payments",
     sortOrder: 24,
   },
   {

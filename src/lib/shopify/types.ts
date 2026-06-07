@@ -43,11 +43,15 @@ export interface ProductStatsSummary {
   isSampled: boolean;
 }
 
+export type StorefrontType = "liquid" | "hydrogen" | "unknown";
+
 export interface StoreScanResult {
   domain: string;
   storeUrl: string;
   storeName: string | null;
   shopifyDetected: boolean;
+  /** Liquid theme store vs Hydrogen/Oxygen headless. */
+  storefrontType: StorefrontType;
   shopifyDomain: string | null;
   shopifyPlan: string | null;
   country: string | null;

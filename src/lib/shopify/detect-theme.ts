@@ -1,3 +1,4 @@
+import { isHydrogenStorefront } from "./detect-storefront";
 import type { ThemeDetectionResult } from "./types";
 
 interface ThemeCandidate {
@@ -12,6 +13,18 @@ interface ThemeCandidate {
 export function detectTheme(html: string): ThemeDetectionResult & {
   rawThemeId: string | null;
 } {
+  if (isHydrogenStorefront(html)) {
+    return {
+      themeName: null,
+      themeVendor: null,
+      themeDescription: null,
+      themeStoreUrl: null,
+      themeVersion: null,
+      confidenceScore: 0,
+      rawThemeId: null,
+    };
+  }
+
   const candidates: ThemeCandidate[] = [];
 
   const themeObject = html.match(/Shopify\.theme\s*=\s*(\{[\s\S]*?\});/);
@@ -115,11 +128,16 @@ export function detectTheme(html: string): ThemeDetectionResult & {
     });
   }
 
-  const assetTheme = html.match(/\/assets\/([^/"'?]+)\.css/i);
+  const assetTheme = html.match(
+    /\/assets\/([^/"'?#]+)\.css/i
+  );
+  const assetFromOxygen = assetTheme?.[0]?.includes("oxygen-v2");
   if (
     assetTheme?.[1] &&
+    !assetFromOxygen &&
     !assetTheme[1].includes("theme") &&
-    !looksLikeVersionOrBackup(assetTheme[1])
+    !looksLikeVersionOrBackup(assetTheme[1]) &&
+    !looksLikeBuildChunk(assetTheme[1])
   ) {
     candidates.push({
       name: formatThemeName(assetTheme[1]),
@@ -164,6 +182,18 @@ export function detectTheme(html: string): ThemeDetectionResult & {
 
   const confidenceScore = Math.min(100, best.weight);
 
+  if (confidenceScore < 50) {
+    return {
+      themeName: null,
+      themeVendor: null,
+      themeDescription: null,
+      themeStoreUrl: null,
+      themeVersion,
+      confidenceScore: 0,
+      rawThemeId: best.themeId,
+    };
+  }
+
   return {
     themeName: best.name,
     themeVendor: best.vendor,
@@ -201,5 +231,15 @@ function formatThemeName(slug: string): string {
 function looksLikeVersionOrBackup(value: string): boolean {
   return /(backup|bf[-_]?backup|store[-_]\d+|rc[-_]cm[-_]|update$|\d{4}-\d{2}-\d{2}[_-]\d{2}[-:]\d{2}|v?\d+\.\d+|hydra)/i.test(
     value
+  );
+}
+
+/** Vite/Oxygen bundle names like Slider-BcQFRtnu or main-CFHZf92s — not theme handles. */
+function looksLikeBuildChunk(value: string): boolean {
+  return (
+    /^[A-Za-z][A-Za-z0-9]*-[A-Za-z0-9]{6,14}$/.test(value) ||
+    /^main-[A-Za-z0-9]+$/.test(value) ||
+    /^chunk-/i.test(value) ||
+    /^entry\.client/i.test(value)
   );
 }
