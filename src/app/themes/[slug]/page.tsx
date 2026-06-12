@@ -1,14 +1,10 @@
 import { notFound } from "next/navigation";
-import { ThemeBasicDetail } from "@/components/themes/theme-basic-detail";
 import { ThemeDetailContent } from "@/components/themes/theme-detail-content";
 import {
   ThemeDetailJsonLd,
   WebPageJsonLd,
 } from "@/components/seo/structured-data";
-import {
-  getFeaturedThemeBySlug,
-  featuredThemes,
-} from "@/lib/constants/featured-themes";
+import { featuredThemes } from "@/lib/constants/featured-themes";
 import {
   getPopularThemeBySlug,
   popularThemes,
@@ -50,7 +46,6 @@ export async function generateMetadata({ params }: ThemePageProps) {
 
 export default async function ThemeDetailPage({ params }: ThemePageProps) {
   const { slug } = await params;
-  const featured = getFeaturedThemeBySlug(slug);
   const theme = getPopularThemeBySlug(slug);
 
   if (!theme) {
@@ -62,46 +57,28 @@ export default async function ThemeDetailPage({ params }: ThemePageProps) {
     .slice(0, 5);
 
   const pageTitle = `${theme.name} Shopify Theme`;
-
-  if (featured) {
-    return (
-      <>
-        <WebPageJsonLd
-          name={`${pageTitle} — Features, Price & Stores`}
-          description={featured.metaDescription}
-          path={`/themes/${slug}`}
-        />
-        <ThemeDetailJsonLd
-          name={featured.name}
-          slug={featured.slug}
-          vendor={featured.vendor}
-          description={featured.metaDescription}
-          priceType={featured.priceType}
-          themeStoreUrl={featured.themeStoreUrl}
-          imageUrl={featured.imageUrl}
-        />
-        <ThemeDetailContent theme={featured} relatedThemes={relatedThemes} />
-      </>
-    );
-  }
+  const metaDescription =
+    theme.metaDescription.length > 80
+      ? theme.metaDescription
+      : `${theme.name} Shopify theme by ${theme.vendor} — overview, features, pros & cons, FAQ, and stores using ${theme.name}.`;
 
   return (
     <>
       <WebPageJsonLd
-        name={pageTitle}
-        description={theme.description}
+        name={`${pageTitle} — Review, Features & Price`}
+        description={metaDescription}
         path={`/themes/${slug}`}
       />
       <ThemeDetailJsonLd
         name={theme.name}
         slug={theme.slug}
         vendor={theme.vendor}
-        description={theme.description}
+        description={metaDescription}
         priceType={theme.priceType}
         themeStoreUrl={theme.themeStoreUrl}
         imageUrl={theme.imageUrl}
       />
-      <ThemeBasicDetail theme={theme} />
+      <ThemeDetailContent theme={theme} relatedThemes={relatedThemes} />
     </>
   );
 }

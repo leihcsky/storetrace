@@ -60,8 +60,9 @@ export async function ThemeStoresUsing({
         </>
       ) : (
         <p className="mt-3 max-w-2xl text-slate-600">
-          No stores in our database have been confirmed with {themeName} yet.
-          Analyze a store below — verified matches will appear here after scan.
+          Detected stores will appear here as our database grows. Run the theme
+          detector on any Shopify URL — confirmed {themeName} matches will show
+          up on this page over time.
         </p>
       )}
 

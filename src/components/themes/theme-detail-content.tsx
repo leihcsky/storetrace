@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { ExternalLink, Check } from "lucide-react";
+import { ExternalLink, Check, Minus } from "lucide-react";
 import { ThemePreviewImage } from "@/components/themes/theme-preview-image";
 import { ThemeStoresUsing } from "@/components/themes/theme-stores-using";
+import { FaqJsonLd } from "@/components/seo/structured-data";
 import {
   getThemeAffiliateUrl,
   type FeaturedTheme,
 } from "@/lib/constants/featured-themes";
+import { resolveThemeDetailProfile } from "@/lib/constants/theme-detail-profiles";
 
 interface ThemeDetailContentProps {
   theme: FeaturedTheme;
@@ -17,6 +19,8 @@ export function ThemeDetailContent({
   relatedThemes,
 }: ThemeDetailContentProps) {
   const affiliateUrl = getThemeAffiliateUrl(theme.themeStoreUrl);
+  const detail = resolveThemeDetailProfile(theme);
+  const pageTitle = `${theme.name} Shopify Theme`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -28,6 +32,7 @@ export function ThemeDetailContent({
         <span className="text-slate-700">{theme.name}</span>
       </nav>
 
+      {/* Hero */}
       <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:items-start">
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <ThemePreviewImage theme={theme} variant="detail" priority />
@@ -38,7 +43,7 @@ export function ThemeDetailContent({
             Shopify Theme
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            {theme.name}
+            {pageTitle}
           </h1>
 
           <dl className="mt-6 space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-6">
@@ -50,7 +55,13 @@ export function ThemeDetailContent({
               <dt className="text-sm font-medium text-slate-500">Vendor</dt>
               <dd className="text-lg font-semibold text-slate-900">{theme.vendor}</dd>
             </div>
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200/80 pb-4">
+              <dt className="text-sm font-medium text-slate-500">Category</dt>
+              <dd className="text-lg font-semibold text-slate-900">
+                {detail.category}
+              </dd>
+            </div>
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200/80 pb-4">
               <dt className="text-sm font-medium text-slate-500">Price</dt>
               <dd className="flex flex-wrap items-center gap-2">
                 <span
@@ -65,9 +76,21 @@ export function ThemeDetailContent({
                 <span className="text-sm text-slate-600">{theme.priceDisplay}</span>
               </dd>
             </div>
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <dt className="text-sm font-medium text-slate-500">Official Website</dt>
+              <dd>
+                <a
+                  href={affiliateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer sponsored"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-brand hover:underline"
+                >
+                  Shopify Theme Store
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                </a>
+              </dd>
+            </div>
           </dl>
-
-          <p className="mt-5 text-slate-600">{theme.description}</p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <a
@@ -89,19 +112,37 @@ export function ThemeDetailContent({
         </div>
       </div>
 
+      {/* Overview */}
+      <section className="mt-14" aria-labelledby="theme-overview-heading">
+        <h2
+          id="theme-overview-heading"
+          className="text-2xl font-bold text-slate-900 sm:text-3xl"
+        >
+          Overview
+        </h2>
+        <div className="mt-6 max-w-3xl space-y-4 text-slate-600">
+          {detail.overview.map((paragraph) => (
+            <p key={paragraph.slice(0, 48)} className="leading-relaxed">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      {/* Key Features */}
       <section className="mt-14" aria-labelledby="theme-features-heading">
         <h2
           id="theme-features-heading"
           className="text-2xl font-bold text-slate-900 sm:text-3xl"
         >
-          {theme.name} Features
+          Key Features
         </h2>
         <p className="mt-3 text-slate-600">
-          Key capabilities merchants look for when comparing the {theme.name}{" "}
-          Shopify theme.
+          Capabilities merchants evaluate when comparing the {theme.name} Shopify
+          theme.
         </p>
         <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-          {theme.features.map((feature) => (
+          {detail.features.map((feature) => (
             <li
               key={feature}
               className="flex gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-700 shadow-sm"
@@ -116,20 +157,90 @@ export function ThemeDetailContent({
         </ul>
       </section>
 
-      <section className="mt-14" aria-labelledby="theme-overview-heading">
+      {/* Best For */}
+      <section className="mt-14" aria-labelledby="theme-best-for-heading">
         <h2
-          id="theme-overview-heading"
+          id="theme-best-for-heading"
           className="text-2xl font-bold text-slate-900 sm:text-3xl"
         >
-          Theme Overview
+          Best For
         </h2>
-        <div className="prose prose-slate mt-6 max-w-3xl space-y-4 text-slate-600">
-          {theme.overview.map((paragraph) => (
-            <p key={paragraph.slice(0, 40)} className="leading-relaxed">
-              {paragraph}
-            </p>
+        <p className="mt-3 text-slate-600">
+          Store types and merchants that commonly choose {theme.name}.
+        </p>
+        <ul className="mt-6 flex flex-wrap gap-2">
+          {detail.bestFor.map((item) => (
+            <li
+              key={item}
+              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm"
+            >
+              {item}
+            </li>
           ))}
+        </ul>
+      </section>
+
+      {/* Pros & Cons */}
+      <section className="mt-14" aria-labelledby="theme-pros-cons-heading">
+        <h2
+          id="theme-pros-cons-heading"
+          className="text-2xl font-bold text-slate-900 sm:text-3xl"
+        >
+          Pros &amp; Cons
+        </h2>
+        <div className="mt-8 grid gap-6 sm:grid-cols-2">
+          <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-6">
+            <h3 className="font-semibold text-emerald-900">Pros</h3>
+            <ul className="mt-4 space-y-2.5">
+              {detail.pros.map((pro) => (
+                <li
+                  key={pro}
+                  className="flex gap-2 text-sm text-emerald-950/90"
+                >
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  {pro}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-6">
+            <h3 className="font-semibold text-slate-900">Cons</h3>
+            <ul className="mt-4 space-y-2.5">
+              {detail.cons.map((con) => (
+                <li key={con} className="flex gap-2 text-sm text-slate-700">
+                  <Minus className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
+                  {con}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mt-14" aria-labelledby="theme-faq-heading">
+        <FaqJsonLd items={detail.faq} />
+        <h2
+          id="theme-faq-heading"
+          className="text-2xl font-bold text-slate-900 sm:text-3xl"
+        >
+          FAQ
+        </h2>
+        <dl className="mt-8 space-y-4">
+          {detail.faq.map((item) => (
+            <div
+              key={item.question}
+              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+              <dt className="text-lg font-semibold text-slate-900">
+                {item.question}
+              </dt>
+              <dd className="mt-2 leading-relaxed text-slate-600">
+                {item.answer}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       <div className="mt-14 border-t border-slate-200 pt-14">
@@ -141,7 +252,10 @@ export function ThemeDetailContent({
       </div>
 
       {relatedThemes.length > 0 && (
-        <section className="mt-14 border-t border-slate-200 pt-14" aria-labelledby="related-themes-heading">
+        <section
+          className="mt-14 border-t border-slate-200 pt-14"
+          aria-labelledby="related-themes-heading"
+        >
           <h2
             id="related-themes-heading"
             className="text-xl font-bold text-slate-900"

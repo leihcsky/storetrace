@@ -230,7 +230,10 @@ function entryToFeaturedTheme(entry: PopularThemeEntry): FeaturedTheme {
     metaDescription: entry.description,
     priceType: entry.priceType,
     priceLabel: entry.priceLabel,
-    priceDisplay: entry.priceLabel,
+    priceDisplay:
+      entry.priceType === "free"
+        ? "Free on the Shopify Theme Store"
+        : "One-time purchase on the Shopify Theme Store (premium)",
     features: [],
     overview: [entry.description],
     exampleStoresToScan: [],
