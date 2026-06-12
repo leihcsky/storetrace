@@ -4,7 +4,6 @@ import { HowItWorks } from "@/components/home/how-it-works";
 import { PopularTools } from "@/components/home/popular-tools";
 import { PopularThemes } from "@/components/home/popular-themes";
 import { PopularApps } from "@/components/home/popular-apps";
-import { RecentAnalyses } from "@/components/home/recent-analyses";
 import { FAQ } from "@/components/home/faq";
 import { HomePageJsonLd, WebPageJsonLd } from "@/components/seo/structured-data";
 import { createPageMetadata } from "@/lib/utils/metadata";
@@ -56,7 +55,6 @@ export default function HomePage() {
       <PopularTools />
       <PopularThemes />
       <PopularApps />
-      <RecentAnalyses />
       <FAQ />
     </>
   );

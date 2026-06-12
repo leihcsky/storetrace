@@ -55,22 +55,54 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <p className="font-semibold text-slate-900">Resources</p>
+            <p className="font-semibold text-slate-900">Company</p>
             <ul className="mt-3 space-y-2 text-sm text-slate-600">
+              <li>
+                <Link href="/about" className="hover:text-brand">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-brand">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-brand">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-brand">
+                  Terms of Service
+                </Link>
+              </li>
               <li>
                 <Link href="/blog" className="hover:text-brand">
                   Blog
                 </Link>
               </li>
-              <li>
-                <Link href="/tools" className="hover:text-brand">
-                  All Tools
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
-        <p className="mt-10 border-t border-slate-200 pt-6 text-center text-sm text-slate-500">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t border-slate-200 pt-6 text-sm text-slate-500">
+          <Link href="/privacy" className="hover:text-brand">
+            Privacy
+          </Link>
+          <span aria-hidden>·</span>
+          <Link href="/terms" className="hover:text-brand">
+            Terms
+          </Link>
+          <span aria-hidden>·</span>
+          <Link href="/about" className="hover:text-brand">
+            About
+          </Link>
+          <span aria-hidden>·</span>
+          <Link href="/contact" className="hover:text-brand">
+            Contact
+          </Link>
+        </div>
+        <p className="mt-4 text-center text-sm text-slate-500">
           © {new Date().getFullYear()} {siteConfig.name}. Shopify Store
           Intelligence Platform.
         </p>
